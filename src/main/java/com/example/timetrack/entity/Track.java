@@ -1,0 +1,36 @@
+package com.example.timetrack.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.UUID;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "track")
+public class Track {
+
+    @Id
+    @NotNull
+    @GeneratedValue
+    @Column(name = "id")
+    private UUID id;
+
+    @NotNull
+    @NotEmpty
+    @Column(name = "comment")
+    private String comment;
+
+    @NotNull
+    @Column(name = "date")
+    private LocalDate date;
+
+    @NotNull
+    @Column(name = "time")
+    private Double time;
+}
