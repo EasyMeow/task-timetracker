@@ -31,7 +31,6 @@ public class Project {
     @Column(name = "title")
     private String title;
 
-    @NotNull
     @ManyToMany
     @JoinTable(
             name = "project_task",

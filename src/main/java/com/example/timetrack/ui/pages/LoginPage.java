@@ -5,6 +5,7 @@ import com.example.timetrack.services.UserService;
 import com.example.timetrack.ui.uitls.Utils;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
@@ -20,6 +21,7 @@ import org.apache.logging.log4j.util.Strings;
 
 @PageTitle("Login")
 @Route(value = "login")
+@CssImport("./styles/login.css")
 public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlParameter<String> {
 
     private final UserService userService;

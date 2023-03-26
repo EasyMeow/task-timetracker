@@ -1,14 +1,16 @@
 package com.example.timetrack.ui.pages;
 
+import com.example.timetrack.entity.Team;
 import com.example.timetrack.entity.User;
 import com.example.timetrack.enums.Position;
+import com.example.timetrack.services.TeamService;
 import com.example.timetrack.services.UserService;
 import com.example.timetrack.ui.uitls.Utils;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -18,6 +20,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.logging.log4j.util.Strings;
 
@@ -28,6 +31,7 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
     private String urlParam = "";
 
     private final UserService userService;
+    private final TeamService teamService;
 
     private final Dialog dialog = new Dialog();
     private TextField nameField;
@@ -38,8 +42,13 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
     private PasswordField passwordField;
     private PasswordField retryPasswordField;
 
-    public RegisterPage(UserService userService) {
+    private final Dialog createTeamDialog = new Dialog();
+    private TextField teamNameField;
+    private User user;
+
+    public RegisterPage(UserService userService, TeamService teamService) {
         this.userService = userService;
+        this.teamService = teamService;
 
         initContent();
     }
@@ -74,6 +83,17 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
         retryPasswordField.setWidthFull();
         retryPasswordField.setLabel("Повторите пароль");
 
+        Label createTeamLabel = new Label("Создание команды");
+
+        teamNameField = new TextField();
+        teamNameField.setWidthFull();
+        teamNameField.setLabel("Название команды");
+
+        Button createTeamButton = new Button("Сохранить", this::createTeam);
+        createTeamButton.setWidthFull();
+        VerticalLayout createTeamLayout = new VerticalLayout(createTeamLabel, teamNameField, createTeamButton);
+        createTeamDialog.add(createTeamLayout);
+
         Button registerButton = new Button("Зарегистрироваться", this::register);
         registerButton.setWidthFull();
 
@@ -90,9 +110,26 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
         dialog.open();
     }
 
+    private void createTeam(ClickEvent<Button> event) {
+        if (Strings.isBlank(teamNameField.getValue())) {
+            teamNameField.setInvalid(true);
+            teamNameField.setErrorMessage("Название команды не может быть пустым");
+        } else {
+            Team team = new Team();
+            team.setProjectManager(user);
+            team.setName(teamNameField.getValue());
+            teamService.save(team);
+
+            VaadinSession.getCurrent().setAttribute("user", user);
+            createTeamDialog.close();
+            dialog.close();
+            forward("newproject");
+        }
+    }
+
     private void register(ClickEvent<Button> event) {
-        if(validate()) {
-            User user = new User();
+        if (validate()) {
+            user = new User();
             user.setName(nameField.getValue());
             user.setSecondName(secondNameField.getValue());
             user.setDateOfBirth(birthDateField.getValue());
@@ -102,7 +139,11 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
 
             userService.save(user);
 
-            forward();
+            if(urlParam.equals("pm")) {
+                createTeamDialog.open();
+            } else {
+                forward("tasks");
+            }
         }
     }
 
@@ -149,8 +190,8 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
         return isValid;
     }
 
-    private void forward() {
-        getUI().ifPresent(ui -> ui.navigate("tasks"));
+    private void forward(String href) {
+        getUI().ifPresent(ui -> ui.navigate(href));
     }
 
     @Override

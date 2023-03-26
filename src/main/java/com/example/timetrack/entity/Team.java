@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,10 @@ public class Team {
     private UUID id;
 
     @NotNull
+    @NotEmpty
+    @Column(name = "name")
+    private String name;
+
     @ManyToOne
     @JoinColumn(name = "team_lead")
     private User teamLead;
@@ -30,7 +35,6 @@ public class Team {
     @JoinColumn(name = "project_manager")
     private User projectManager;
 
-    @NotNull
     @ManyToMany
     @JoinTable(
             name = "developers",

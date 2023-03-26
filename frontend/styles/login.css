@@ -1,0 +1,14 @@
+.dialog-login {
+    width: 400px !important;
+    /*text-decoration: underline black;*/
+}
+
+.dialog-login vaadin-text-field, .dialog-login vaadin-password-field, .dialog-login vaadin-button {
+    width: 100%;
+    padding: 5px;
+}
+
+
+.dialog-login > label {
+    font-weight: bold;
+}

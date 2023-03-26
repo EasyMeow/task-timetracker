@@ -1,7 +1,11 @@
 package com.example.timetrack.services;
 
+import com.example.timetrack.entity.Team;
+import com.example.timetrack.entity.User;
 import com.example.timetrack.repo.TeamRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TeamService {
@@ -10,5 +14,13 @@ public class TeamService {
 
     public TeamService(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
+    }
+
+    public void save(Team team) {
+        teamRepository.save(team);
+    }
+
+    public List<Team> getAllByPm(User pm) {
+        return teamRepository.findTeamsByProjectManager(pm);
     }
 }
