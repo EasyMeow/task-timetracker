@@ -1,6 +1,8 @@
 package com.example.timetrack.ui.pages;
 
+import com.example.timetrack.entity.Project;
 import com.example.timetrack.entity.User;
+import com.example.timetrack.services.ProjectService;
 import com.example.timetrack.services.UserService;
 import com.example.timetrack.ui.uitls.Utils;
 import com.vaadin.flow.component.ClickEvent;
@@ -10,7 +12,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlParameter<String> {
 
     private final UserService userService;
+    private final ProjectService projectService;
 
     private TextField loginField;
     private PasswordField passwordField;
@@ -32,8 +34,9 @@ public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlPara
     private String forwardTo = "";
     private final Dialog dialog = new Dialog();
 
-    public LoginPage(UserService userService) {
+    public LoginPage(UserService userService, ProjectService projectService) {
         this.userService = userService;
+        this.projectService = projectService;
 
         initContent();
     }
@@ -80,6 +83,9 @@ public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlPara
             if (userService.checkPassword(login, password)) {
                 User user = userService.authorize(login);
                 VaadinSession.getCurrent().setAttribute("user", user);
+
+                Project project = projectService.findByUser(user);
+                VaadinSession.getCurrent().setAttribute("project", project);
 
                 forward();
                 dialog.close();

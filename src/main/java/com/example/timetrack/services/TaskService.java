@@ -1,5 +1,6 @@
 package com.example.timetrack.services;
 
+import com.example.timetrack.entity.Task;
 import com.example.timetrack.repo.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,5 +11,9 @@ public class TaskService {
 
     public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
+    }
+
+    public void save(Task task) {
+        taskRepository.save(task);
     }
 }

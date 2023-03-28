@@ -61,7 +61,6 @@ public class Task {
     @JoinColumn(name = "reviewer")
     private User reviewer;
 
-    @NotNull
     @ManyToMany
     @JoinTable(
             name = "task_comment",
@@ -71,7 +70,6 @@ public class Task {
     private List<Comment> comments;
 
 
-    @NotNull
     @ManyToMany
     @JoinTable(
             name = "task_track",

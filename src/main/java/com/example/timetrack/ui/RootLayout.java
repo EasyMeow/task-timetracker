@@ -1,7 +1,7 @@
 package com.example.timetrack.ui;
 
 import com.example.timetrack.entity.User;
-import com.example.timetrack.ui.pages.TasksPage;
+import com.example.timetrack.ui.pages.tasks.TasksPage;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

@@ -1,8 +1,5 @@
 package com.example.timetrack.ui.pages;
 
-import com.example.timetrack.entity.User;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.server.VaadinSession;
@@ -18,5 +15,11 @@ public interface DefaultPage extends  BeforeEnterObserver {
             event.forwardTo("tasks");
             return;
         }
+
+        beforeEnterOver(event);
+    }
+
+    default void beforeEnterOver(BeforeEnterEvent event) {
+
     }
 }

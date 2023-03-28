@@ -62,9 +62,9 @@ public class NewProjectPage extends VerticalLayout implements DefaultPage {
 
         VerticalLayout dialogLayout = new VerticalLayout(label, titleField, codeField, teamField, saveButton);
 
-        if(!projectService.hasProjects(pm)) {
-            dialog.setCloseOnOutsideClick(false);
-            dialog.setCloseOnEsc(false);
+        if(projectService.hasProjects(pm)) {
+            dialog.setCloseOnOutsideClick(true);
+            dialog.setCloseOnEsc(true);
         }
         dialog.add(dialogLayout);
         dialog.open();
@@ -85,8 +85,9 @@ public class NewProjectPage extends VerticalLayout implements DefaultPage {
             project.setTitle(titleField.getValue());
             project.setCode(codeField.getValue());
             project.setTeam(teamField.getValue());
-            projectService.save(project);
+            project = projectService.save(project);
 
+            VaadinSession.getCurrent().setAttribute("project", project);
             dialog.close();
             forward("tasks");
         }
