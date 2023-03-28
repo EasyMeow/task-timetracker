@@ -32,12 +32,7 @@ public class Project {
     @Column(name = "title")
     private String title;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_task",
-            joinColumns = @JoinColumn(name = "project_id"), // proj_id
-            inverseJoinColumns = @JoinColumn(name = "task_id") // task_id
-    )
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
     @NotNull

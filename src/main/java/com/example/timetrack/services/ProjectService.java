@@ -1,17 +1,22 @@
 package com.example.timetrack.services;
 
 import com.example.timetrack.entity.Project;
+import com.example.timetrack.entity.Team;
 import com.example.timetrack.entity.User;
 import com.example.timetrack.repo.ProjectRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final TeamService teamService;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, TeamService teamService) {
         this.projectRepository = projectRepository;
+        this.teamService = teamService;
     }
 
     public Project save(Project project) {
@@ -24,8 +29,11 @@ public class ProjectService {
 
     public Project findByUser(User user) {
         return projectRepository.findAll().stream()
-                .filter(project -> project.getTeam().getProjectManager().equals(user) ||
-                        (project.getTeam().getTeamLead() !=null && project.getTeam().getTeamLead().equals(user)) ||
-                project.getTeam().getDevelopers().stream().anyMatch(dev-> dev.equals(user))).findFirst().orElse(null);
+                .filter(project -> {
+                    Team team = teamService.getTeamById(project.getTeam().getId());
+                    return team.getProjectManager().equals(user) ||
+                            (team.getTeamLead() !=null && team.getTeamLead().equals(user)) ||
+                            team.getDevelopers().stream().anyMatch(dev-> dev.equals(user));
+                }).collect(Collectors.toList()).get(0);
     }
 }

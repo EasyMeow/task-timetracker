@@ -2,10 +2,12 @@ package com.example.timetrack.ui.pages.tasks;
 
 import com.example.timetrack.entity.Project;
 import com.example.timetrack.entity.Task;
+import com.example.timetrack.entity.Team;
 import com.example.timetrack.entity.User;
 import com.example.timetrack.enums.TaskStatus;
 import com.example.timetrack.services.ProjectService;
 import com.example.timetrack.services.TaskService;
+import com.example.timetrack.services.TeamService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -33,17 +35,18 @@ public class TaskEditor extends Dialog {
     private final User user;
     private final Project project;
 
-    public TaskEditor(TaskService taskService, ProjectService projectService, User user, Project project) {
+    public TaskEditor(TaskService taskService, ProjectService projectService,TeamService teamService, User user, Project project) {
         this.taskService = taskService;
         this.projectService = projectService;
         this.user = user;
         this.project = project;
 
-        List<User> users = project.getTeam().getDevelopers();
-        if (project.getTeam().getTeamLead() != null) {
-            users.add(project.getTeam().getTeamLead());
+        Team team = teamService.getTeamById(project.getTeam().getId());
+        List<User> users = team.getDevelopers();
+        if (team.getTeamLead() != null) {
+            users.add(team.getTeamLead());
         }
-        users.add(project.getTeam().getProjectManager());
+        users.add(team.getProjectManager());
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
@@ -83,11 +86,12 @@ public class TaskEditor extends Dialog {
         task.setReporter(user);
         task.setStatus(TaskStatus.NEW);
         task.setCreationDate(LocalDate.now());
+        task.setProject(project);
         taskService.save(task);
 
-        project.getTasks().add(task);
-
-        projectService.save(project);
+//        project.getTasks().add(saved);
+//
+//        projectService.save(project);
         close();
         UI.getCurrent().getPage().reload();
     }

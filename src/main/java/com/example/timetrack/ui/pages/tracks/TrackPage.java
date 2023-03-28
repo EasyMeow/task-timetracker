@@ -56,7 +56,7 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
         taskSelectField = new Select<>();
         taskSelectField.setWidthFull();
         taskSelectField.setLabel("Задача");
-        taskSelectField.setItems(project.getTasks());
+        taskSelectField.setItems(taskService.getByProject(project));
         taskSelectField.setItemLabelGenerator(Task::getTitle);
 
         datePicker = new DatePicker();
@@ -89,10 +89,10 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
     private void saveAll(ClickEvent<Button> event) {
         Task task = taskSelectField.getValue();
         trackComponents.forEach(trackComponent -> {
-            Track track = trackService.save(trackComponent.getValue());
-            task.getTracks().add(track);
+            Track track = trackComponent.getValue();
+            track.setTask(task);
+            trackService.save(track);
         });
-        taskService.save(task);
     }
 
     private void addNewTrack(ClickEvent<Button> event) {
@@ -109,7 +109,7 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
         if (!taskSelectField.isEmpty() && !datePicker.isEmpty()) {
             tasksLayout.removeAll();
             addButton.setEnabled(true);
-            List<Track> tracks = taskSelectField.getValue().getTracks();
+            List<Track> tracks = trackService.getByTask(taskSelectField.getValue());;
             tracks.forEach(track -> {
                 if(track.getDate().equals(datePicker.getValue())) {
                     TrackComponent trackComponent = new TrackComponent();

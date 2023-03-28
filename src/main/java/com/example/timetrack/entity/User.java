@@ -51,4 +51,23 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof User) {
+            return ((User) obj).getId().equals(getId());
+        }
+
+        return false;
+    }
 }

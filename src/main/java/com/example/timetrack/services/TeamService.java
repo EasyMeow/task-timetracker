@@ -6,6 +6,7 @@ import com.example.timetrack.repo.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TeamService {
@@ -22,5 +23,9 @@ public class TeamService {
 
     public List<Team> getAllByPm(User pm) {
         return teamRepository.findTeamsByProjectManager(pm);
+    }
+
+    public Team getTeamById(UUID id) {
+        return teamRepository.findById(id).orElse(null);
     }
 }

@@ -71,11 +71,10 @@ public class Task {
     private List<Comment> comments = new ArrayList<>();
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "task_track",
-            joinColumns = @JoinColumn(name = "task_id"), // proj_id
-            inverseJoinColumns = @JoinColumn(name = "track_id") // task_id
-    )
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Track> tracks = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "project_id")
+    private Project project;
 }

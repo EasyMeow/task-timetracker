@@ -1,8 +1,11 @@
 package com.example.timetrack.services;
 
+import com.example.timetrack.entity.Task;
 import com.example.timetrack.entity.Track;
 import com.example.timetrack.repo.TrackRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TrackService {
@@ -15,5 +18,9 @@ public class TrackService {
 
     public Track save(Track track) {
         return trackRepository.save(track);
+    }
+
+    public List<Track> getByTask(Task task) {
+        return trackRepository.getAllByTask(task);
     }
 }

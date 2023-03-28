@@ -34,4 +34,8 @@ public class Track {
     @NotNull
     @Column(name = "time")
     private BigDecimal time;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "task_id")
+    private Task task;
 }

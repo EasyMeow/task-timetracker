@@ -85,9 +85,9 @@ public class NewProjectPage extends VerticalLayout implements DefaultPage {
             project.setTitle(titleField.getValue());
             project.setCode(codeField.getValue());
             project.setTeam(teamField.getValue());
-            project = projectService.save(project);
+            Project saved = projectService.save(project);
 
-            VaadinSession.getCurrent().setAttribute("project", project);
+            VaadinSession.getCurrent().setAttribute("project", saved);
             dialog.close();
             forward("tasks");
         }
