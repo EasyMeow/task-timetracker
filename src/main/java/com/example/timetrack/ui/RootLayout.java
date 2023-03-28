@@ -2,6 +2,7 @@ package com.example.timetrack.ui;
 
 import com.example.timetrack.entity.User;
 import com.example.timetrack.ui.pages.tasks.TasksPage;
+import com.example.timetrack.ui.pages.tracks.TrackPage;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -33,6 +34,7 @@ public class RootLayout extends VerticalLayout implements RouterLayout {
         HorizontalLayout menu = new HorizontalLayout();
         menu.addClassName("header-menu");
         menu.add(new RouterLink("Задачи", TasksPage.class));
+        menu.add(new RouterLink("Трекинг", TrackPage.class));
 
         User user = (User) VaadinSession.getCurrent().getAttribute("user");
         Button button = new Button(user.getName() + " " + user.getSecondName());

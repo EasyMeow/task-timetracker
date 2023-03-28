@@ -59,6 +59,7 @@ public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlPara
 
         HorizontalLayout toolbar = new HorizontalLayout(enterButton, registerAnchor);
         toolbar.setWidthFull();
+        toolbar.getStyle().set("align-items", "baseline");
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(label, loginField, passwordField, toolbar);
         dialogLayout.addClassName("dialog-login");

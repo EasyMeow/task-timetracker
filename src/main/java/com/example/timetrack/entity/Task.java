@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,7 +68,7 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"), // proj_id
             inverseJoinColumns = @JoinColumn(name = "comment_id") // task_id
     )
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
 
     @ManyToMany
@@ -76,5 +77,5 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"), // proj_id
             inverseJoinColumns = @JoinColumn(name = "track_id") // task_id
     )
-    private List<Track> tracks;
+    private List<Track> tracks = new ArrayList<>();
 }
