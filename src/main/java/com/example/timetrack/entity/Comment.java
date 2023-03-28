@@ -29,4 +29,13 @@ public class Comment {
     @NotNull
     @Column(name = "date")
     private LocalDate date;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "task_id")
+    private Task task;
 }

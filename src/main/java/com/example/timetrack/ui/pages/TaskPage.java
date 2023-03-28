@@ -1,10 +1,8 @@
 package com.example.timetrack.ui.pages;
 
-import com.example.timetrack.entity.Project;
-import com.example.timetrack.entity.Task;
-import com.example.timetrack.entity.Team;
-import com.example.timetrack.entity.User;
+import com.example.timetrack.entity.*;
 import com.example.timetrack.enums.TaskStatus;
+import com.example.timetrack.services.CommentService;
 import com.example.timetrack.services.TaskService;
 import com.example.timetrack.services.TeamService;
 import com.example.timetrack.ui.RootLayout;
@@ -12,8 +10,10 @@ import com.github.appreciated.card.Card;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageList;
+import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -25,6 +25,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,8 +37,10 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
 
     private final TaskService taskService;
     private final TeamService teamService;
+    private final CommentService commentService;
     private final User user = (User) VaadinSession.getCurrent().getAttribute("user");
     private final Project project = (Project) VaadinSession.getCurrent().getAttribute("project");
+    List<MessageListItem> messages = new ArrayList<>();
     private Task task;
 
     private TextField titleField = new TextField();
@@ -44,6 +49,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
     private Select<User> assigneeSelect = new Select<>();
     private TextField reporterField = new TextField();
     private Select<User> reviewerSelect = new Select<>();
+    private DatePicker dateField = new DatePicker();
 
     private MessageList messageList = new MessageList();
     private TextArea messageField = new TextArea();
@@ -52,9 +58,10 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
     private Card leftCard = new Card();
     private Card rightCard = new Card();
 
-    public TaskPage(TaskService taskService, TeamService teamService) {
+    public TaskPage(TaskService taskService, TeamService teamService, CommentService commentService) {
         this.taskService = taskService;
         this.teamService = teamService;
+        this.commentService = commentService;
         initContent();
     }
 
@@ -79,7 +86,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
 
         VerticalLayout messageLayout = new VerticalLayout();
         messageLayout.setHeight("400px");
-        messageLayout.getStyle().set("overflow","auto");
+        messageLayout.getStyle().set("overflow", "auto");
         messageLayout.add(messageList);
         messageList.setSizeFull();
 
@@ -96,12 +103,25 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         VerticalLayout cardLayout = new VerticalLayout();
         cardLayout.setSizeFull();
         cardLayout.setPadding(true);
-        cardLayout.add(descriptionField, messageLayout,messageField, footer);
+        cardLayout.add(descriptionField, messageLayout, messageField, footer);
         leftCard.add(cardLayout);
     }
 
     private void sendMessage(ClickEvent<Button> event) {
+        Comment comment = new Comment();
+        comment.setTask(task);
+        comment.setDate(LocalDate.now());
+        comment.setUser(user);
+        comment.setText(messageField.getValue());
 
+        commentService.save(comment);
+
+        MessageListItem message = new MessageListItem(
+                comment.getText(),
+                comment.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                comment.getUser().getName() + " " + comment.getUser().getSecondName());
+        messages.add(message);
+        messageList.setItems(messages);
     }
 
     private void initRightLayout() {
@@ -120,7 +140,11 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         reviewerSelect.setWidthFull();
         reviewerSelect.setItemLabelGenerator(user -> user.getName() + " " + user.getSecondName());
 
-        VerticalLayout cardLayout = new VerticalLayout(assigneeSelect, reporterField, reviewerSelect);
+        dateField.setLabel("Дата создания");
+        dateField.setEnabled(false);
+        dateField.setWidthFull();
+
+        VerticalLayout cardLayout = new VerticalLayout(assigneeSelect, reporterField, reviewerSelect, dateField);
         cardLayout.setSizeFull();
         cardLayout.setPadding(true);
         rightCard.add(cardLayout);
@@ -149,7 +173,16 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
             task = taskService.getById(taskId);
 
             fillFields();
+            initChangeListeners();
         }
+    }
+
+    private void initChangeListeners() {
+        titleField.addValueChangeListener(event -> save());
+        statusSelect.addValueChangeListener(event -> save());
+        descriptionField.addValueChangeListener(event -> save());
+        assigneeSelect.addValueChangeListener(event -> save());
+        reviewerSelect.addValueChangeListener(event -> save());
     }
 
     private void fillFields() {
@@ -158,6 +191,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         statusSelect.setValue(task.getStatus());
         reporterField.setValue(task.getReporter().getName() + " " + task.getReporter().getSecondName());
         descriptionField.setValue(task.getDescription());
+        dateField.setValue(task.getCreationDate());
 
         Team team = teamService.getTeamById(project.getTeam().getId());
         List<User> users = team.getDevelopers();
@@ -171,5 +205,28 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
 
         reviewerSelect.setValue(task.getReviewer());
         assigneeSelect.setValue(task.getAssignee());
+
+        fillMessageList();
+    }
+
+    private void fillMessageList() {
+        commentService.getByTask(task).forEach(comment -> {
+            MessageListItem message = new MessageListItem(
+                    comment.getText(),
+                    comment.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                    comment.getUser().getName() + " " + comment.getUser().getSecondName());
+            messages.add(message);
+        });
+        messageList.setItems(messages);
+    }
+
+    private void save() {
+        task.setTitle(titleField.getValue());
+        task.setStatus(statusSelect.getValue());
+        task.setAssignee(assigneeSelect.getValue());
+        task.setReviewer(reviewerSelect.getValue());
+        task.setDescription(descriptionField.getValue());
+
+        taskService.save(task);
     }
 }

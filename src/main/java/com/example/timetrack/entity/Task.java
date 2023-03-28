@@ -62,12 +62,7 @@ public class Task {
     @JoinColumn(name = "reviewer")
     private User reviewer;
 
-    @ManyToMany
-    @JoinTable(
-            name = "task_comment",
-            joinColumns = @JoinColumn(name = "task_id"), // proj_id
-            inverseJoinColumns = @JoinColumn(name = "comment_id") // task_id
-    )
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
 
