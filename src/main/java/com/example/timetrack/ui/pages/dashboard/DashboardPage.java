@@ -13,6 +13,8 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.logging.log4j.util.Strings;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
@@ -58,6 +60,37 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
         monthLayout.setAlignItems(Alignment.CENTER);
         monthLayout.add(new Label("Количество часов в день за последний месяц"), monthChart);
         firstCard.add(monthLayout);
+        add(firstCard);
+
+        LocalDate today = LocalDate.now();
+
+        LocalDate lastWeekStart = today.minusWeeks(1).with(DayOfWeek.MONDAY);
+        LocalDate lastWeekEnd = today.minusWeeks(1).with(DayOfWeek.SUNDAY);
+
+        List<Track> lastWeekTracks = tracks.stream()
+                .filter(track -> {
+                    LocalDate date = track.getDate();
+                    return date.isAfter(lastWeekStart.minusDays(1)) && date.isBefore(lastWeekEnd.plusDays(1));
+                }).collect(Collectors.toList());
+
+        LocalDate thisWeekStart = today.with(DayOfWeek.MONDAY);
+        LocalDate thisWeekEnd = today.with(DayOfWeek.SUNDAY);
+
+        List<Track> thisWeekTracks = tracks.stream()
+                .filter(track -> {
+                    LocalDate date = track.getDate();
+                    return date.isAfter(thisWeekStart.minusDays(1)) && date.isBefore(thisWeekEnd.plusDays(1));
+                })
+                .collect(Collectors.toList());
+
+        LastWeekThisWeekChart lastWeekThisWeekChart = new LastWeekThisWeekChart(lastWeekTracks,thisWeekTracks);
+        lastWeekThisWeekChart.setSizeFull();
+        VerticalLayout lastWeekThisWeekLayout = new VerticalLayout();
+        lastWeekThisWeekLayout.setPadding(true);
+        lastWeekThisWeekLayout.setSizeFull();
+        lastWeekThisWeekLayout.setAlignItems(Alignment.CENTER);
+        lastWeekThisWeekLayout.add(new Label("Эффективность по сравнению с прошлой неделей"), lastWeekThisWeekChart);
+        firstCard.add(lastWeekThisWeekLayout);
         add(firstCard);
     }
 }

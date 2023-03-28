@@ -22,6 +22,20 @@ public class MonthChart extends Div {
         dataSeries.setName("Количество часов");
 
         List<DataSeriesItem> dataSeriesItems = new ArrayList<>();
+        List<Track> removedTracks = new ArrayList<>();
+        List<Track> mergedTracks = new ArrayList<>();
+        tracks.forEach(track1 -> {
+            tracks.forEach(track2 -> {
+                if(track1.getDate().equals(track2.getDate())){
+                    removedTracks.add(track1);
+                    removedTracks.add(track2);
+                    track1.setTime(track1.getTime().add(track2.getTime()));
+                    mergedTracks.add(track1);
+                }
+            });
+        });
+        tracks.removeAll(removedTracks);
+        tracks.addAll(mergedTracks);
         for (Track track : tracks) {
             dataSeriesItems.add(new DataSeriesItem(track.getDate().getDayOfMonth(), track.getTime()));
         }
