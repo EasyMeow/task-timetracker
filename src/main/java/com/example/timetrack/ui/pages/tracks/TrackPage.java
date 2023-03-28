@@ -91,6 +91,7 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
         trackComponents.forEach(trackComponent -> {
             Track track = trackComponent.getValue();
             track.setTask(task);
+            track.setUser(user);
             trackService.save(track);
         });
     }

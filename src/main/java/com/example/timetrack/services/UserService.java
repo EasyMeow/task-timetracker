@@ -4,6 +4,8 @@ import com.example.timetrack.entity.User;
 import com.example.timetrack.repo.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
 
@@ -35,4 +37,7 @@ public class UserService {
         return userRepository.findByLogin(login) !=null;
     }
 
+    public User getById(UUID id) {
+        return userRepository.getById(id);
+    }
 }

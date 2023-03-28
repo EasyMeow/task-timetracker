@@ -2,6 +2,7 @@ package com.example.timetrack.services;
 
 import com.example.timetrack.entity.Task;
 import com.example.timetrack.entity.Track;
+import com.example.timetrack.entity.User;
 import com.example.timetrack.repo.TrackRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,9 @@ public class TrackService {
 
     public List<Track> getByTask(Task task) {
         return trackRepository.getAllByTask(task);
+    }
+
+    public List<Track> getByUser(User user) {
+        return trackRepository.getAllByUser(user);
     }
 }
