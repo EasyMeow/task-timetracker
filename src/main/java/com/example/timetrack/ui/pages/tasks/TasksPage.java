@@ -9,11 +9,8 @@ import com.example.timetrack.services.TeamService;
 import com.example.timetrack.ui.RootLayout;
 import com.example.timetrack.ui.components.TaskComponent;
 import com.example.timetrack.ui.pages.DefaultPage;
-import com.github.appreciated.card.Card;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
@@ -43,20 +40,12 @@ public class TasksPage extends VerticalLayout implements DefaultPage {
     }
 
     private void initContent() {
-
-        Card card = new Card();
-        card.setHeight("15%");
-        card.setWidthFull();
         Button createTaskButton = new Button("Новая задача", this::openDialog);
-        HorizontalLayout topToolbar = new HorizontalLayout();
-        topToolbar.setWidthFull();
-        topToolbar.add(new Label("Задачи на проекте " + project.getTitle()), createTaskButton);
-        card.add(topToolbar);
 
         tasksLayout = new VerticalLayout();
         tasksLayout.setSizeFull();
         tasksLayout.setPadding(true);
-        tasksLayout.add(card);
+        tasksLayout.add(createTaskButton);
         tasks.forEach(task -> {
             TaskComponent taskComponent = new TaskComponent(task);
             taskComponent.setWidthFull();

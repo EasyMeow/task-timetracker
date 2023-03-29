@@ -4,9 +4,7 @@ import com.example.timetrack.entity.Task;
 import com.example.timetrack.enums.TaskStatus;
 import com.example.timetrack.ui.uitls.Utils;
 import com.github.appreciated.card.Card;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.AnchorTarget;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.vaadin.addons.badge.Badge;
 
@@ -24,10 +22,16 @@ public class TaskComponent extends HorizontalLayout {
     public TaskComponent(Task task) {
         fillData(task);
         HorizontalLayout topLayout = new HorizontalLayout();
-        topLayout.add(taskTitleAnchor, status);
-        HorizontalLayout bottomLayout = new HorizontalLayout();
-        bottomLayout.add(assignee, creationDate);
-        card.add(topLayout,bottomLayout);
+        topLayout.setPadding(true);
+        topLayout.setAlignItems(Alignment.BASELINE);
+        Div spacer = new Div();
+        spacer.setWidth("30px");
+        Div spacer2 = new Div();
+        spacer2.setWidth("30px");
+        Div spacer3 = new Div();
+        spacer3.setWidth("50px");
+        topLayout.add(taskTitleAnchor, spacer, new Label("Исполнитель:"), assignee, spacer2, new Label("Дата создания:"), creationDate, spacer3, new Label("Статус задачи:"), status);
+        card.add(topLayout);
         card.setWidthFull();
         add(card);
     }
@@ -38,13 +42,13 @@ public class TaskComponent extends HorizontalLayout {
         taskTitleAnchor.setHref("task/" + task.getId());
         assignee.setText(task.getAssignee().getName() + " " + task.getAssignee().getSecondName());
         creationDate.setText(task.getCreationDate().format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        if(task.getStatus() == TaskStatus.NEW) {
+        if (task.getStatus() == TaskStatus.NEW) {
             status = Utils.createDefaultBadge(TaskStatus.NEW.getName());
-        } else if(task.getStatus() == TaskStatus.IN_PROGRES) {
+        } else if (task.getStatus() == TaskStatus.IN_PROGRES) {
             status = Utils.createContrastBadge(TaskStatus.IN_PROGRES.getName());
-        } else  if(task.getStatus() == TaskStatus.ON_REVIEW) {
+        } else if (task.getStatus() == TaskStatus.ON_REVIEW) {
             status = Utils.createSuccessBadge(TaskStatus.ON_REVIEW.getName());
-        } else if(task.getStatus() == TaskStatus.DONE) {
+        } else if (task.getStatus() == TaskStatus.DONE) {
             status = Utils.createSuccessPrimaryBadge(TaskStatus.DONE.getName());
         }
     }

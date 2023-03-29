@@ -20,7 +20,6 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.logging.log4j.util.Strings;
 
@@ -68,6 +67,7 @@ public class RegisterPage extends VerticalLayout implements DefaultPage, HasUrlP
 
         positionField = new Select<>();
         positionField.setEmptySelectionAllowed(false);
+        positionField.setItemLabelGenerator(Position::getName);
         positionField.setWidthFull();
         positionField.setLabel("Должность");
 
