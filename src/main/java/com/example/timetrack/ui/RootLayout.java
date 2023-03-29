@@ -37,6 +37,7 @@ public class RootLayout extends VerticalLayout implements RouterLayout {
         menu.add(new RouterLink("Задачи", TasksPage.class));
         menu.add(new RouterLink("Трекинг", TrackPage.class));
         menu.add(new RouterLink("Дашборд", DashboardPage.class));
+        menu.add(new RouterLink("Команда", TeamPage.class));
 
         User user = (User) VaadinSession.getCurrent().getAttribute("user");
         Button button = new Button(user.getName() + " " + user.getSecondName());
