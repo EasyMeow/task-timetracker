@@ -11,6 +11,12 @@ public class Utils {
         notification.open();
     }
 
+    public static void showSuccessNotification(String message) {
+        Notification notification = new Notification(message, 3000, Notification.Position.TOP_END);
+        notification.setThemeName("success");
+        notification.open();
+    }
+
     public static Badge createDefaultBadge(String text) {
         Badge badge = new Badge(text);
         badge.setVariant(Badge.BadgeVariant.NORMAL);
