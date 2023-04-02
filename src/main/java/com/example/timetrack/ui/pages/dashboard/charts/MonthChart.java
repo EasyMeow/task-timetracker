@@ -1,11 +1,7 @@
 package com.example.timetrack.ui.pages.dashboard.charts;
 
 import com.example.timetrack.entity.Track;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.Configuration;
-import com.vaadin.flow.component.charts.model.DataSeries;
-import com.vaadin.flow.component.charts.model.DataSeriesItem;
-import com.vaadin.flow.component.charts.model.PlotOptionsColumn;
+import com.storedobject.chart.*;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.ArrayList;
@@ -15,13 +11,14 @@ public class MonthChart extends Div {
 
 
     public MonthChart(List<Track> tracks) {
+        SOChart chart = new SOChart();
+        chart.setWidthFull();
+        chart.setHeight("500px");
 
-        DataSeries dataSeries = new DataSeries();
-        PlotOptionsColumn splinePlotOptions = new PlotOptionsColumn();
-        dataSeries.setPlotOptions(splinePlotOptions);
-        dataSeries.setName("Количество часов");
-
-        List<DataSeriesItem> dataSeriesItems = new ArrayList<>();
+        DateData xValues = new DateData();
+        Data yValues = new Data();
+        xValues.setName("Дата");
+        yValues.setName("Количество часов");
 
         List<TrackWrapper> resultTracks = new ArrayList<>();
         tracks.forEach(track -> {
@@ -34,13 +31,40 @@ public class MonthChart extends Div {
             }
         });
         for (TrackWrapper track : resultTracks) {
-            dataSeriesItems.add(new DataSeriesItem(track.getDate().getDayOfMonth(), track.getTime()));
+            xValues.add(track.getDate());
+            yValues.add(track.getTime());
         }
-        dataSeries.setData(dataSeriesItems);
-        Chart chart = new Chart();
 
-        Configuration configuration = chart.getConfiguration();
-        configuration.addSeries(dataSeries);
+        BarChart basrMonthChart = new BarChart(xValues, yValues);
+        basrMonthChart.setName("Часы");
+        basrMonthChart.setStackName("BC");
+
+        YAxis yAxis = new YAxis(yValues);
+        yAxis.setName("Количество часов");
+        XAxis xAxis = new XAxis(xValues);
+        xAxis.setMinAsMinData();
+        xAxis.setName("День месяца");
+
+        RectangularCoordinate rc = new RectangularCoordinate(xAxis, yAxis);
+        basrMonthChart.plotOn(rc);
+
+        Title title = new Title("Количество часов за последний месяц");
+        title.getPosition(true).setLeft(Size.percentage(10));
+
+        chart.disableDefaultLegend();
+        Legend legend = new Legend();
+        legend.getPosition(true).setRight(Size.percentage(10));
+
+
+        basrMonthChart
+                .getTooltip(true)
+                .append("Дата: ")
+                .append(xValues)
+                .newline()
+                .append("Количество часов: ")
+                .append(yValues);
+
+        chart.add(rc, title, legend);
 
         add(chart);
     }

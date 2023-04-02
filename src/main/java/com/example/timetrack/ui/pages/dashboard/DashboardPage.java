@@ -9,7 +9,6 @@ import com.example.timetrack.ui.pages.DefaultPage;
 import com.example.timetrack.ui.pages.dashboard.charts.LastWeekThisWeekChart;
 import com.example.timetrack.ui.pages.dashboard.charts.MonthChart;
 import com.github.appreciated.card.Card;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -31,6 +30,7 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
     private final TrackService trackService;
 
     private Card firstCard = new Card();
+
     public DashboardPage(UserService userService, TrackService trackService) {
         this.userService = userService;
         this.trackService = trackService;
@@ -38,7 +38,7 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        if(!Strings.isBlank(parameter)) {
+        if (!Strings.isBlank(parameter)) {
             UUID id = UUID.fromString(parameter);
             user = userService.getById(id);
         } else {
@@ -56,12 +56,7 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
                 .collect(Collectors.toList());
         MonthChart monthChart = new MonthChart(thisMonthTracks);
         monthChart.setSizeFull();
-        VerticalLayout monthLayout = new VerticalLayout();
-        monthLayout.setPadding(true);
-        monthLayout.setSizeFull();
-        monthLayout.setAlignItems(Alignment.CENTER);
-        monthLayout.add(new Label("Количество часов в день за последний месяц"), monthChart);
-        firstCard.add(monthLayout);
+        firstCard.add(monthChart);
         add(firstCard);
 
         LocalDate today = LocalDate.now();
@@ -85,14 +80,9 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
                 })
                 .collect(Collectors.toList());
 
-        LastWeekThisWeekChart lastWeekThisWeekChart = new LastWeekThisWeekChart(lastWeekTracks,thisWeekTracks);
+        LastWeekThisWeekChart lastWeekThisWeekChart = new LastWeekThisWeekChart(lastWeekTracks, thisWeekTracks);
         lastWeekThisWeekChart.setSizeFull();
-        VerticalLayout lastWeekThisWeekLayout = new VerticalLayout();
-        lastWeekThisWeekLayout.setPadding(true);
-        lastWeekThisWeekLayout.setSizeFull();
-        lastWeekThisWeekLayout.setAlignItems(Alignment.CENTER);
-        lastWeekThisWeekLayout.add(new Label("Эффективность по сравнению с прошлой неделей"), lastWeekThisWeekChart);
-        firstCard.add(lastWeekThisWeekLayout);
+        firstCard.add(lastWeekThisWeekChart);
         add(firstCard);
     }
 }
