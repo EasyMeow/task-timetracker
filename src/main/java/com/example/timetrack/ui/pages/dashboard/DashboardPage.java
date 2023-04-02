@@ -6,6 +6,8 @@ import com.example.timetrack.services.TrackService;
 import com.example.timetrack.services.UserService;
 import com.example.timetrack.ui.RootLayout;
 import com.example.timetrack.ui.pages.DefaultPage;
+import com.example.timetrack.ui.pages.dashboard.charts.LastWeekThisWeekChart;
+import com.example.timetrack.ui.pages.dashboard.charts.MonthChart;
 import com.github.appreciated.card.Card;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,7 +52,7 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
         List<Track> tracks = trackService.getByUser(user);
         Comparator<Track> byDate = Comparator.comparing(Track::getDate);
         tracks.sort(byDate);
-        List<Track> thisMonthTracks = tracks.stream().filter(date -> YearMonth.from(date.getDate()).equals(YearMonth.now()))
+        List<Track> thisMonthTracks = tracks.stream().filter(date -> YearMonth.from(date.getDate()).equals(YearMonth.now().minusMonths(1)))
                 .collect(Collectors.toList());
         MonthChart monthChart = new MonthChart(thisMonthTracks);
         monthChart.setSizeFull();

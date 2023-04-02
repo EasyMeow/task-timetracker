@@ -1,4 +1,4 @@
-package com.example.timetrack.ui.pages.dashboard;
+package com.example.timetrack.ui.pages.dashboard.charts;
 
 import com.example.timetrack.entity.Track;
 import com.vaadin.flow.component.charts.Chart;
@@ -18,22 +18,18 @@ public class LastWeekThisWeekChart extends Div {
         dataSeries.setName("Предыдущая неделя");
 
         List<DataSeriesItem> dataSeriesItems = new ArrayList<>();
-//        List<Track> removedTracks = new ArrayList<>();
-//        List<Track> mergedTracks = new ArrayList<>();
-//        lastWeek.forEach(track1 -> {
-//            lastWeek.forEach(track2 -> {
-//                if (track1.getDate().equals(track2.getDate())) {
-//                    removedTracks.add(track1);
-//                    removedTracks.add(track2);
-//                    track1.setTime(track1.getTime().add(track2.getTime()));
-//                    mergedTracks.add(track1);
-//                }
-//            });
-//        });
-//        lastWeek.removeAll(removedTracks);
-//        lastWeek.addAll(mergedTracks);
+        List<TrackWrapper> resultLastWeekTracks = new ArrayList<>();
+        lastWeek.forEach(track -> {
+            if (resultLastWeekTracks.stream().noneMatch(res -> res.getDate().equals(track.getDate()))) {
+                resultLastWeekTracks.add(new TrackWrapper(track.getDate(), track.getTime()));
+            } else {
+                resultLastWeekTracks.stream().filter(res -> res.getDate().equals(track.getDate())).findFirst().ifPresent(res-> {
+                    res.setTime(res.getTime().add(track.getTime()));
+                });
+            }
+        });
         int num = 1;
-        for (Track track : lastWeek.subList(0,7)) {
+        for (TrackWrapper track : resultLastWeekTracks) {
             dataSeriesItems.add(new DataSeriesItem(num++, track.getTime()));
         }
         dataSeries.setData(dataSeriesItems);
@@ -43,22 +39,18 @@ public class LastWeekThisWeekChart extends Div {
         dataSeriesLast.setName("Эта неделя");
 
         List<DataSeriesItem> lastSeriesItems = new ArrayList<>();
-//        removedTracks.clear();
-//        mergedTracks.clear();
-//        thisWeek.forEach(track1 -> {
-//            thisWeek.forEach(track2 -> {
-//                if (track1.getDate().equals(track2.getDate())) {
-//                    removedTracks.add(track1);
-//                    removedTracks.add(track2);
-//                    track1.setTime(track1.getTime().add(track2.getTime()));
-//                    mergedTracks.add(track1);
-//                }
-//            });
-//        });
-//        thisWeek.removeAll(removedTracks);
-//        thisWeek.addAll(mergedTracks);
+        List<TrackWrapper> resultThisWeekTracks = new ArrayList<>();
+        thisWeek.forEach(track -> {
+            if (resultThisWeekTracks.stream().noneMatch(res -> res.getDate().equals(track.getDate()))) {
+                resultThisWeekTracks.add(new TrackWrapper(track.getDate(), track.getTime()));
+            } else {
+                resultThisWeekTracks.stream().filter(res -> res.getDate().equals(track.getDate())).findFirst().ifPresent(res-> {
+                    res.setTime(res.getTime().add(track.getTime()));
+                });
+            }
+        });
         num = 1;
-        for (Track track : thisWeek.subList(0,7)) {
+        for (TrackWrapper track : resultThisWeekTracks) {
             lastSeriesItems.add(new DataSeriesItem(num++, track.getTime()));
         }
         dataSeriesLast.setData(lastSeriesItems);
