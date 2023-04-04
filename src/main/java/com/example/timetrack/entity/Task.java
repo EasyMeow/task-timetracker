@@ -43,6 +43,10 @@ public class Task {
     private LocalDate creationDate;
 
     @NotNull
+    @Column(name = "doneDate")
+    private LocalDate doneDate;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TaskStatus status;

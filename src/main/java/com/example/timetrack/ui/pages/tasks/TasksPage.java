@@ -3,7 +3,6 @@ package com.example.timetrack.ui.pages.tasks;
 import com.example.timetrack.entity.Project;
 import com.example.timetrack.entity.Task;
 import com.example.timetrack.entity.User;
-import com.example.timetrack.services.ProjectService;
 import com.example.timetrack.services.TaskService;
 import com.example.timetrack.services.TeamService;
 import com.example.timetrack.ui.RootLayout;
@@ -25,7 +24,6 @@ import java.util.List;
 public class TasksPage extends VerticalLayout implements DefaultPage {
 
     private final TaskService taskService;
-    private final ProjectService projectService;
     private final TeamService teamService;
     private final User user = (User) VaadinSession.getCurrent().getAttribute("user");
     private final Project project = (Project) VaadinSession.getCurrent().getAttribute("project");
@@ -33,9 +31,8 @@ public class TasksPage extends VerticalLayout implements DefaultPage {
     private List<Task> tasks = new ArrayList<>();
     VerticalLayout tasksLayout;
 
-    public TasksPage(TaskService taskService, ProjectService projectService, TeamService teamService) {
+    public TasksPage(TaskService taskService,  TeamService teamService) {
         this.taskService = taskService;
-        this.projectService = projectService;
         this.teamService = teamService;
     }
 
@@ -56,7 +53,7 @@ public class TasksPage extends VerticalLayout implements DefaultPage {
     }
 
     private void openDialog(ClickEvent<Button> event) {
-        TaskEditor taskEditor = new TaskEditor(taskService, projectService,teamService, user, project);
+        TaskEditor taskEditor = new TaskEditor(taskService,teamService, user, project);
         taskEditor.setCloseOnEsc(true);
         taskEditor.setCloseOnOutsideClick(true);
         taskEditor.open();

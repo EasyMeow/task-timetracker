@@ -50,6 +50,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
     private TextField reporterField = new TextField();
     private Select<User> reviewerSelect = new Select<>();
     private DatePicker dateField = new DatePicker();
+    private DatePicker doneDateField = new DatePicker();
 
     private MessageList messageList = new MessageList();
     private TextArea messageField = new TextArea();
@@ -144,7 +145,10 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         dateField.setEnabled(false);
         dateField.setWidthFull();
 
-        VerticalLayout cardLayout = new VerticalLayout(assigneeSelect, reporterField, reviewerSelect, dateField);
+        doneDateField.setLabel("Дата завершения задачи");
+        doneDateField.setWidthFull();
+
+        VerticalLayout cardLayout = new VerticalLayout(assigneeSelect, reporterField, reviewerSelect, dateField, doneDateField);
         cardLayout.setSizeFull();
         cardLayout.setPadding(true);
         rightCard.add(cardLayout);
@@ -183,6 +187,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         descriptionField.addValueChangeListener(event -> save());
         assigneeSelect.addValueChangeListener(event -> save());
         reviewerSelect.addValueChangeListener(event -> save());
+        doneDateField.addValueChangeListener(event -> save());
     }
 
     private void fillFields() {
@@ -192,6 +197,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         reporterField.setValue(task.getReporter().getName() + " " + task.getReporter().getSecondName());
         descriptionField.setValue(task.getDescription());
         dateField.setValue(task.getCreationDate());
+        doneDateField.setValue(task.getDoneDate());
 
         Team team = teamService.getTeamById(project.getTeam().getId());
         List<User> users = team.getDevelopers();
@@ -226,6 +232,7 @@ public class TaskPage extends VerticalLayout implements DefaultPage, HasUrlParam
         task.setAssignee(assigneeSelect.getValue());
         task.setReviewer(reviewerSelect.getValue());
         task.setDescription(descriptionField.getValue());
+        task.setDoneDate(doneDateField.getValue());
 
         taskService.save(task);
     }
