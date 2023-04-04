@@ -17,6 +17,7 @@ public class TrackComponent extends CustomField<Track> {
     private TextField commentField;
     private BigDecimalField timeField;
 
+    private Track track;
     private LocalDate date;
 
     public TrackComponent() {
@@ -46,7 +47,6 @@ public class TrackComponent extends CustomField<Track> {
 
     @Override
     protected Track generateModelValue() {
-        Track track = new Track();
         track.setComment(commentField.getValue());
         track.setDate(date);
         track.setTime(timeField.getValue());
@@ -55,6 +55,7 @@ public class TrackComponent extends CustomField<Track> {
 
     @Override
     protected void setPresentationValue(Track track) {
+        this.track = track;
         commentField.setValue(track.getComment() != null ? track.getComment()  : "");
         timeField.setValue(track.getTime());
         date = track.getDate();

@@ -9,6 +9,7 @@ import com.example.timetrack.services.TrackService;
 import com.example.timetrack.ui.RootLayout;
 import com.example.timetrack.ui.components.TrackComponent;
 import com.example.timetrack.ui.pages.DefaultPage;
+import com.example.timetrack.ui.uitls.Utils;
 import com.github.appreciated.card.Card;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
@@ -21,8 +22,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PageTitle("Трекинг")
 @Route(value = "track", layout = RootLayout.class)
@@ -88,12 +91,31 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
 
     private void saveAll(ClickEvent<Button> event) {
         Task task = taskSelectField.getValue();
+        List<Track> tracks = new ArrayList<>();
         trackComponents.forEach(trackComponent -> {
             Track track = trackComponent.getValue();
             track.setTask(task);
             track.setUser(user);
-            trackService.save(track);
+            tracks.add(track);
         });
+        BigDecimal[] count = {BigDecimal.ZERO};
+        List<Track> traksFromDb = trackService.getByUser(user).stream()
+                .filter(item -> item.getDate().equals(datePicker.getValue()))
+                .collect(Collectors.toList());
+        tracks.forEach(track-> {
+            if(!traksFromDb.contains(track)) {
+                count[0] = count[0].add(track.getTime());
+            }
+        });
+        traksFromDb.forEach(track-> {
+            count[0] = count[0].add(track.getTime());
+        });
+        if(count[0].compareTo(BigDecimal.valueOf(24)) > 0) {
+            Utils.showErrorNotification("Суммарное количество часов превышает 24");
+        } else {
+            trackService.saveAll(tracks);
+            Utils.showSuccessNotification("Данные успешно сохранены");
+        }
     }
 
     private void addNewTrack(ClickEvent<Button> event) {

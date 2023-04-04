@@ -21,6 +21,10 @@ public class TrackService {
         return trackRepository.save(track);
     }
 
+    public List<Track> saveAll(List<Track> tracks) {
+        return trackRepository.saveAll(tracks);
+    }
+
     public List<Track> getByTask(Task task) {
         return trackRepository.getAllByTask(task);
     }
