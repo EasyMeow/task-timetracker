@@ -91,7 +91,7 @@ public class TaskComponent extends HorizontalLayout {
                 double daysLeft = shouldBeDoneDay - today;
                 double percent = daysLeft / duration;
                 if (percent > 0.6) {
-                    progressBar.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+
                 } else if (percent > 0.3) {
                     progressBar.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
                 } else {

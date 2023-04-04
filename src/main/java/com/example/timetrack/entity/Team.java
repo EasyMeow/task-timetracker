@@ -2,6 +2,7 @@ package com.example.timetrack.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -44,4 +45,10 @@ public class Team {
     )
     private List<User> developers = new ArrayList<>();
 
+    @Type(type = "com.vladmihalcea.hibernate.type.array.StringArrayType")
+    @Column(name = "wait_queue", columnDefinition = "text[]")
+    private String[] waitQueue = new String[0];
+
+    @Column(name = "wait_for_teamlead")
+    private Boolean waitForTeamLead = false;
 }

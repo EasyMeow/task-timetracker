@@ -3,6 +3,7 @@ package com.example.timetrack.ui;
 import com.example.timetrack.entity.User;
 import com.example.timetrack.ui.pages.dashboard.DashboardPage;
 import com.example.timetrack.ui.pages.tasks.TasksPage;
+import com.example.timetrack.ui.pages.team.TeamPage;
 import com.example.timetrack.ui.pages.tracks.TrackPage;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
