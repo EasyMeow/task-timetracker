@@ -61,7 +61,17 @@ public class TasksPage extends VerticalLayout implements DefaultPage {
 
     private void bindData() {
         tasks = taskService.getByProject(project);
+        tasks.sort(this::comp);
         initContent();
+    }
+
+    private int comp(Task task1, Task task2) {
+        if(task1.getCreationDate().isAfter(task2.getCreationDate())) {
+            return 1;
+        } else if(task1.getCreationDate().isBefore(task2.getCreationDate())){
+            return -1;
+        }
+        return 0;
     }
 
     @Override

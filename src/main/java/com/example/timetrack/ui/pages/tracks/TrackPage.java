@@ -12,6 +12,7 @@ import com.example.timetrack.ui.pages.DefaultPage;
 import com.example.timetrack.ui.uitls.Utils;
 import com.github.appreciated.card.Card;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -83,6 +84,7 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
         tasksLayout.getStyle().set("overflow","auto");
 
         Button saveButton =  new Button("Сохранить", this::saveAll);
+        saveButton.addClickShortcut(Key.ENTER);
         HorizontalLayout footer = new HorizontalLayout(saveButton);
         footer.setJustifyContentMode(JustifyContentMode.END);
         footer.setWidthFull();
@@ -130,6 +132,7 @@ public class TrackPage extends VerticalLayout implements DefaultPage {
 
     private void loadTasks() {
         if (!taskSelectField.isEmpty() && !datePicker.isEmpty()) {
+            trackComponents.clear();
             tasksLayout.removeAll();
             addButton.setEnabled(true);
             List<Track> tracks = trackService.getByTask(taskSelectField.getValue());;

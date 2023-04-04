@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface TeamRepository extends JpaRepository<Team, UUID> {
 
     List<Team> findTeamsByProjectManager(User pm);
+    List<Team> findTeamsByTeamLead(User tm);
 }

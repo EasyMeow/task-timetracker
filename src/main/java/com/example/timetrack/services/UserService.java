@@ -38,6 +38,6 @@ public class UserService {
     }
 
     public User getById(UUID id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id).get();
     }
 }

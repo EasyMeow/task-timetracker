@@ -9,6 +9,7 @@ import com.example.timetrack.ui.pages.DefaultPage;
 import com.example.timetrack.ui.pages.dashboard.charts.LastWeekThisWeekChart;
 import com.example.timetrack.ui.pages.dashboard.charts.MonthChart;
 import com.github.appreciated.card.Card;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinSession;
@@ -49,6 +50,7 @@ public class DashboardPage extends VerticalLayout implements DefaultPage, HasUrl
 
     private void initContent() {
         firstCard.setSizeFull();
+        firstCard.add(new Label("Статистика пользователя: "+ user.getName() + " " + user.getSecondName()));
         List<Track> tracks = trackService.getByUser(user);
         Comparator<Track> byDate = Comparator.comparing(Track::getDate);
         tracks.sort(byDate);

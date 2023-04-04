@@ -61,7 +61,7 @@ public class TeamPage extends VerticalLayout implements DefaultPage {
         teamSelect.setWidthFull();
         teamSelect.setLabel("Команда");
         teamSelect.setItemLabelGenerator(Team::getName);
-        teamSelect.setItems(this.teamService.getAllByPm(user));
+        teamSelect.setItems(this.teamService.getAllByUser(user));
         teamSelect.addValueChangeListener(event -> loadData());
         Button inviteButton = new Button("Добавить в команду", this::openDialog);
         inviteButton.setWidth("300px");
@@ -189,15 +189,21 @@ public class TeamPage extends VerticalLayout implements DefaultPage {
                     .set("color", "var(--lumo-secondary-text-color)")
                     .set("font-size", "var(--lumo-font-size-s)");
              column = new VerticalLayout(name, profession);
+             if(this.user.getPosition() != Position.DEVELOPER) {
+                 row.addClickListener(event -> forward("dashboard/"+ user.getId()));
+             }
         } else {
             column = new VerticalLayout(name);
         }
 
         column.setPadding(false);
         column.setSpacing(false);
-
         row.add(avatar, column);
         row.getStyle().set("line-height", "var(--lumo-line-height-m)");
         return row;
+    }
+
+    private void forward(String href) {
+        getUI().ifPresent(ui -> ui.navigate(href));
     }
 }

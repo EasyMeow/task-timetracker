@@ -16,11 +16,13 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
 import java.util.List;
 
+@PageTitle("Проекты")
 @Route(value = "projects", layout = RootLayout.class)
 public class ProjectsPage extends VerticalLayout implements DefaultPage {
 
