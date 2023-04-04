@@ -6,6 +6,7 @@ import com.example.timetrack.entity.User;
 import com.example.timetrack.repo.ProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +28,7 @@ public class ProjectService {
         return projectRepository.findAll().stream().anyMatch(pr -> pr.getTeam().getProjectManager().equals(pm));
     }
 
-    public Project findByUser(User user) {
+    public Project findFirstByUser(User user) {
         return projectRepository.findAll().stream()
                 .filter(project -> {
                     Team team = teamService.getTeamById(project.getTeam().getId());
@@ -35,5 +36,15 @@ public class ProjectService {
                             (team.getTeamLead() !=null && team.getTeamLead().equals(user)) ||
                             team.getDevelopers().stream().anyMatch(dev-> dev.equals(user));
                 }).collect(Collectors.toList()).get(0);
+    }
+
+    public List<Project> findAllByUser(User user) {
+        return projectRepository.findAll().stream()
+                .filter(project -> {
+                    Team team = teamService.getTeamById(project.getTeam().getId());
+                    return team.getProjectManager().equals(user) ||
+                            (team.getTeamLead() !=null && team.getTeamLead().equals(user)) ||
+                            team.getDevelopers().stream().anyMatch(dev-> dev.equals(user));
+                }).collect(Collectors.toList());
     }
 }

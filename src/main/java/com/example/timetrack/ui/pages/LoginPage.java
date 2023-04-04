@@ -85,7 +85,7 @@ public class LoginPage extends VerticalLayout implements DefaultPage, HasUrlPara
                 User user = userService.authorize(login);
                 VaadinSession.getCurrent().setAttribute("user", user);
 
-                Project project = projectService.findByUser(user);
+                Project project = projectService.findFirstByUser(user);
                 VaadinSession.getCurrent().setAttribute("project", project);
 
                 forward();

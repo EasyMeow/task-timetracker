@@ -2,6 +2,7 @@ package com.example.timetrack.ui;
 
 import com.example.timetrack.entity.User;
 import com.example.timetrack.ui.pages.dashboard.DashboardPage;
+import com.example.timetrack.ui.pages.projects.ProjectsPage;
 import com.example.timetrack.ui.pages.tasks.TasksPage;
 import com.example.timetrack.ui.pages.team.TeamPage;
 import com.example.timetrack.ui.pages.tracks.TrackPage;
@@ -35,6 +36,7 @@ public class RootLayout extends VerticalLayout implements RouterLayout {
 
         HorizontalLayout menu = new HorizontalLayout();
         menu.addClassName("header-menu");
+        menu.add(new RouterLink("Проекты", ProjectsPage.class));
         menu.add(new RouterLink("Задачи", TasksPage.class));
         menu.add(new RouterLink("Трекинг", TrackPage.class));
         menu.add(new RouterLink("Дашборд", DashboardPage.class));
